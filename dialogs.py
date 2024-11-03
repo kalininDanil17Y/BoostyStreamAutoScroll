@@ -1,3 +1,4 @@
+from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QDialog, QLabel, QDialogButtonBox, QVBoxLayout, QTextEdit
 
 
