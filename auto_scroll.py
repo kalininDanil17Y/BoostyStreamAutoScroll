@@ -64,9 +64,10 @@ class AutoScrollApp(QMainWindow):
         control_panel.addWidget(self.help_button)
 
         # Статус автоскроллинга
-        self.status_label = QLabel("Scroll: Off", self)
+        self.status_label = QPushButton("Scroll: Off", self)
         self.status_label.setFixedSize(70, 25)
         control_panel.addWidget(self.status_label)
+        self.status_label.clicked.connect(self.toggle_scroll)
 
         # Выравнивание панели управления
         control_panel.addStretch()
