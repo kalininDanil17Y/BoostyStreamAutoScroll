@@ -143,8 +143,7 @@ class AutoScrollApp(QMainWindow):
 
         cookie = QNetworkCookie()
         cookie.setName(b"auth")
-        cookie.setValue(
-            b"сюда вставить значение cookie")
+        cookie.setValue(b"pasteCookieValueHere")
         cookie.setDomain(".boosty.to")
         cookie.setPath("/")
         cookie.setSecure(True)
