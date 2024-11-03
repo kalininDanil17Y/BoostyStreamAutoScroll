@@ -12,6 +12,9 @@
 
 ## Скриншоты
 
+![Основное окно](https://github.com/user-attachments/assets/1a6d7c99-2397-4942-a101-05b729707c98)
+![Меню с доп.функциями](https://github.com/user-attachments/assets/0821a885-c1b8-4a06-aba2-76a104e1ca4e)
+![DevTools окно](https://github.com/user-attachments/assets/f0841be3-f51f-4434-9c54-3b1eb3b480fe)
 
 
 ## Горячие клавиши
