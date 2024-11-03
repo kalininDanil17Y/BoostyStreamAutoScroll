@@ -1,5 +1,4 @@
 /build
-/dist/*
 /.idea/*
 /.venv/*
 /__pycache__/*
