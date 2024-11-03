@@ -27,7 +27,7 @@ class AutoScrollApp(QMainWindow):
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(5)
 
-        # WebView для отображения веб-страницы (занимает большую часть экрана)
+        # WebView для отображения веб-страницы
         self.browser = QWebEngineView(self)
 
         profile = self.browser.page().profile()
@@ -39,8 +39,8 @@ class AutoScrollApp(QMainWindow):
         if url is None:
             url = "https://boosty.to/hellyeahplay/streams/only-chat"
 
-        self.browser.setUrl(QUrl(url))  # Укажите URL Boosty чата
-        self.browser.loadFinished.connect(self.apply_saved_css)  # Применение CSS после загрузки страницы
+        self.browser.setUrl(QUrl(url))
+        self.browser.loadFinished.connect(self.apply_saved_css)
         main_layout.addWidget(self.browser)
 
         self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
@@ -76,7 +76,7 @@ class AutoScrollApp(QMainWindow):
         self.menu_button = QPushButton(self)
         self.menu_button.setIcon(QIcon(resource_path("resources/menu.png")))
         self.menu_button.setFixedSize(30, 30)
-        # self.menu_button.setStyleSheet("border: none;")
+        self.menu_button.setStyleSheet("border: none;")
         self.menu_button.setCursor(Qt.PointingHandCursor)
         self.menu_button.move(self.width() - 35, self.height() - 32)
         self.menu_button.clicked.connect(self.show_context_menu)
@@ -90,10 +90,8 @@ class AutoScrollApp(QMainWindow):
         # Горячие клавиши
         toggle_scroll_shortcut = QShortcut(QKeySequence("Ctrl+Shift+L"), self)
         toggle_scroll_shortcut.activated.connect(self.toggle_scroll)
-
         toggle_frame_shortcut = QShortcut(QKeySequence("Ctrl+Shift+K"), self)
         toggle_frame_shortcut.activated.connect(self.toggle_frame)
-
         open_dev_tools_shortcut = QShortcut(QKeySequence("Ctrl+Shift+I"), self)
         open_dev_tools_shortcut.activated.connect(self.open_dev_tools)
 
@@ -136,16 +134,17 @@ class AutoScrollApp(QMainWindow):
         # Показ контекстного меню
         self.context_menu.exec_(self.menu_button.mapToGlobal(self.menu_button.rect().bottomRight()))
 
+    ### Метод отключен - Используется авторизация по номеру телефона
     def set_cookie(self):
+        # Получить cookie можно командой:
         # document.cookie.split('; ').find(row => row.startsWith('auth=')).split('=')[1];
-
         # Установка cookie для страницы
         cookie_store = self.browser.page().profile().cookieStore()
 
         cookie = QNetworkCookie()
         cookie.setName(b"auth")
         cookie.setValue(
-            b"{%22accessToken%22:%22194f2d895ab2de4867a1a589fecdf8f1d76c9869d6067172fe4d79c72a6ff1a2%22%2C%22refreshToken%22:%227691b7c94e7127e48fa4c99229ae86ddb90177f49679f171493af1c378e59361%22%2C%22expiresAt%22:1730835377287}")
+            b"сюда вставить значение cookie")
         cookie.setDomain(".boosty.to")
         cookie.setPath("/")
         cookie.setSecure(True)
@@ -194,11 +193,10 @@ class AutoScrollApp(QMainWindow):
 
     def perform_scroll(self):
         # Выполняем JavaScript для плавной прокрутки вниз на 2 пикселя
-        # self.browser.page().runJavaScript("window.scrollBy(0, 2);")
-        self.browser.page().runJavaScript("document.querySelector('.ChatBoxBase_list_Kg9et').scrollBy(0, 100);")
+        self.browser.page().runJavaScript("window.scrollBy(0, 50);") # код для любой страницы
+        self.browser.page().runJavaScript("document.querySelector('.ChatBoxBase_list_Kg9et').scrollBy(0, 100);") # этот код для чата бусти
 
     def toggle_frame(self):
-        # Переключение между безрамочным и стандартным режимами окна
         if self.frame_hidden:
             self.setWindowFlags(Qt.Window)
             self.setWindowOpacity(1)
@@ -207,4 +205,4 @@ class AutoScrollApp(QMainWindow):
             self.setWindowOpacity(1)
 
         self.frame_hidden = not self.frame_hidden
-        self.show()  # Необходимо обновить окно после изменения флагов
+        self.show()
