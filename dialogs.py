@@ -91,31 +91,3 @@ class CssDialog(QDialog):
         # Заполнение текстового поля текущим CSS при открытии диалога
         self.css_text_edit.setText(self.current_css)
         super().showEvent(event)
-
-
-class JsDialog(QDialog):
-    def __init__(self, browser, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Выполнить JavaScript")
-        self.resize(400, 300)
-        self.browser = browser
-
-        # Поле для ввода JavaScript
-        self.js_text_edit = QTextEdit(self)
-
-        # Кнопка выполнения JavaScript
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        button_box.accepted.connect(self.execute_js)
-        button_box.rejected.connect(self.reject)
-
-        # Размещение элементов
-        layout = QVBoxLayout()
-        layout.addWidget(self.js_text_edit)
-        layout.addWidget(button_box)
-        self.setLayout(layout)
-
-    def execute_js(self):
-        # Выполнение JavaScript на странице
-        js_code = self.js_text_edit.toPlainText()
-        self.browser.page().runJavaScript(js_code)
-        self.accept()

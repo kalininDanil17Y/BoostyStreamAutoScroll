@@ -5,7 +5,7 @@ from PyQt5.QtNetwork import QNetworkCookie
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings, QWebEnginePage
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QMenu, QShortcut
 
-from dialogs import HelpDialog, CssDialog, JsDialog
+from dialogs import HelpDialog, CssDialog
 from utils import resource_path
 
 
@@ -84,17 +84,30 @@ class AutoScrollApp(QMainWindow):
 
         # Контекстное меню
         self.context_menu = QMenu(self)
-        self.context_menu.addAction("Перезагрузить", self.do_reload_page)
-        self.context_menu.addAction("Изменить CSS", self.show_css_dialog)
-        self.context_menu.addAction("Выполнить JavaScript", self.show_js_dialog)
+        self.context_menu.addAction("Перезагрузить (F5)", self.do_reload_page)
+        self.context_menu.addAction("Открыть DevTools (Ctrl+Shift+I)", self.open_dev_tools)
+        self.context_menu.addAction("Изменить CSS (Ctrl+Shift+C)", self.show_css_dialog)
+        self.context_menu.addAction("Скрыть UI (Ctrl+Shift+K)", self.toggle_frame)
 
-        # Горячие клавиши
+        # Включить прокрутку
         toggle_scroll_shortcut = QShortcut(QKeySequence("Ctrl+Shift+L"), self)
         toggle_scroll_shortcut.activated.connect(self.toggle_scroll)
+
+        # Скрыть рамку
         toggle_frame_shortcut = QShortcut(QKeySequence("Ctrl+Shift+K"), self)
         toggle_frame_shortcut.activated.connect(self.toggle_frame)
+
+        # Открыть панель разработчика
         open_dev_tools_shortcut = QShortcut(QKeySequence("Ctrl+Shift+I"), self)
         open_dev_tools_shortcut.activated.connect(self.open_dev_tools)
+
+        # Изменить CSS
+        open_edit_css_shortcut = QShortcut(QKeySequence("Ctrl+Shift+С"), self)
+        open_edit_css_shortcut.activated.connect(self.show_css_dialog)
+
+        # Перезагрузить страницу
+        reload_page_shortcut = QShortcut(QKeySequence("f5"), self)
+        reload_page_shortcut.activated.connect(self.do_reload_page)
 
         # Таймер для плавного скроллинга
         self.scroll_timer = QTimer()
@@ -125,11 +138,6 @@ class AutoScrollApp(QMainWindow):
             # Если окно уже открыто, активируем его
             self.dev_tools_window.raise_()
             self.dev_tools_window.activateWindow()
-
-    def show_js_dialog(self):
-        # Открытие окна для ввода JavaScript
-        js_dialog = JsDialog(self.browser, self)
-        js_dialog.exec_()
 
     def show_context_menu(self):
         # Показ контекстного меню
