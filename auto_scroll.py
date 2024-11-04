@@ -3,7 +3,8 @@ from PyQt5.QtCore import Qt, QSettings, QTimer, QUrl
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtNetwork import QNetworkCookie
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings, QWebEnginePage
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QMenu, QShortcut
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QMenu, QShortcut, \
+    QAction
 
 from dialogs import HelpDialog, CssDialog
 from utils import resource_path
@@ -19,6 +20,7 @@ class AutoScrollApp(QMainWindow):
         # Установка начальных значений
         self.scroll_enabled = False
         self.frame_hidden = False
+        self.ui_hidden = False
 
         # Основной виджет и макет
         central_widget = QWidget(self)
@@ -53,31 +55,37 @@ class AutoScrollApp(QMainWindow):
         # Загрузка и применение CSS при запуске
         self.settings = QSettings("BoostyChatAutoScroll", "Settings")
 
-        # Панель управления
-        control_panel = QHBoxLayout()
-        control_panel.setContentsMargins(5, 0, 5, 5)
+        # Создаем контейнер для компоновщика
+        self.control_panel_widget = QWidget()
+        self.control_panel = QHBoxLayout(self.control_panel_widget)
+        self.control_panel.setContentsMargins(5, 0, 5, 5)
 
         # Кнопка помощи
         self.help_button = QPushButton("Помощь", self)
         self.help_button.setFixedSize(70, 25)
         self.help_button.clicked.connect(self.show_help)
-        control_panel.addWidget(self.help_button)
+        self.control_panel.addWidget(self.help_button)
 
         # Статус автоскроллинга
         self.status_label = QPushButton("Scroll: Off", self)
         self.status_label.setFixedSize(70, 25)
-        control_panel.addWidget(self.status_label)
+        self.control_panel.addWidget(self.status_label)
         self.status_label.clicked.connect(self.toggle_scroll)
 
         # Выравнивание панели управления
-        control_panel.addStretch()
-        main_layout.addLayout(control_panel)
+        self.control_panel.addStretch()
+
+        # Устанавливаем минимальные и максимальные размеры для контейнера панели управления
+        self.control_panel_widget.setFixedHeight(30)  # Высота панели управления
+        self.control_panel_widget.adjustSize()  # Подгоняем размер под содержимое
+
+        # Добавляем контейнерный виджет с компоновщиком в основной компоновщик
+        main_layout.addWidget(self.control_panel_widget)
 
         # Кнопка для контекстного меню
         self.menu_button = QPushButton(self)
         self.menu_button.setIcon(QIcon(resource_path("resources/menu.png")))
         self.menu_button.setFixedSize(30, 30)
-        self.menu_button.setStyleSheet("border: none;")
         self.menu_button.setCursor(Qt.PointingHandCursor)
         self.menu_button.move(self.width() - 35, self.height() - 32)
         self.menu_button.clicked.connect(self.show_context_menu)
@@ -87,7 +95,9 @@ class AutoScrollApp(QMainWindow):
         self.context_menu.addAction("Перезагрузить (F5)", self.do_reload_page)
         self.context_menu.addAction("Открыть DevTools (Ctrl+Shift+I)", self.open_dev_tools)
         self.context_menu.addAction("Изменить CSS (Ctrl+Shift+C)", self.show_css_dialog)
-        self.context_menu.addAction("Скрыть UI (Ctrl+Shift+K)", self.toggle_frame)
+
+        self.toggle_ui_action = self.context_menu.addAction("Скрыть UI (Ctrl+Shift+K)", self.toggle_ui)
+        self.toggle_frame_action = self.context_menu.addAction("Скрыть окно (Ctrl+Shift+J)", self.toggle_frame)
 
         # Включить прокрутку
         toggle_scroll_shortcut = QShortcut(QKeySequence("Ctrl+Shift+L"), self)
@@ -208,9 +218,22 @@ class AutoScrollApp(QMainWindow):
         if self.frame_hidden:
             self.setWindowFlags(Qt.Window)
             self.setWindowOpacity(1)
+            self.toggle_frame_action.setText("Скрыть окно (Ctrl+Shift+J)")
         else:
             self.setWindowFlags(Qt.FramelessWindowHint)
             self.setWindowOpacity(1)
+            self.toggle_frame_action.setText("Показать окно (Ctrl+Shift+J)")
 
         self.frame_hidden = not self.frame_hidden
+        self.show()
+
+    def toggle_ui(self):
+        if self.ui_hidden:
+            self.control_panel_widget.show()
+            self.toggle_ui_action.setText("Скрыть UI (Ctrl+Shift+K)")
+        else:
+            self.control_panel_widget.hide()
+            self.toggle_ui_action.setText("Показать UI (Ctrl+Shift+K)")
+
+        self.ui_hidden = not self.ui_hidden
         self.show()
