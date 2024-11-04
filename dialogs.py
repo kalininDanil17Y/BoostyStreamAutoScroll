@@ -5,16 +5,17 @@ from PyQt5.QtWidgets import QDialog, QLabel, QDialogButtonBox, QVBoxLayout, QTex
 class HelpDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Помощь")
+        self.setWindowTitle("О программе")
         self.setModal(True)
-        self.resize(400, 150)
+        self.resize(400, 210)
 
         # Текст помощи
         help_label = QLabel(
-            "Эта программа автоматически прокручивает страницу чата Boosty для стримера Hellyeahplay.\n\n"
-            "Используйте Ctrl + Shift + L для включения/выключения прокрутки.\n"
-            "Используйте Ctrl + Shift + K для скрытия рамки.", self)
+            "Программа для отображения чата Boosty.to с поддержкой автоматического скроллинга, специально разработанная для стримера HellYeahPlay. По умолчанию чат Boosty может зависать при большом количестве сообщений и не прокручивается автоматически, что вызывает неудобства для стримера и зрителей. Данное приложение решает эту проблему, обеспечивая авто-скроллинг, а также возможность ручного управления.", self)
         help_label.setWordWrap(True)
+
+        github_link = QLabel('GitHub: <a style="color: #1E90FF;" href="https://github.com/kalininDanil17Y/BoostyStreamAutoScroll">https://github.com/kalininDanil17Y/BoostyStreamAutoScroll</a>')
+        github_link.setOpenExternalLinks(True)
 
         # Кнопка закрытия
         button_box = QDialogButtonBox(QDialogButtonBox.Ok)
@@ -23,6 +24,7 @@ class HelpDialog(QDialog):
         # Размещение элементов
         layout = QVBoxLayout()
         layout.addWidget(help_label)
+        layout.addWidget(github_link)
         layout.addWidget(button_box)
         self.setLayout(layout)
 
@@ -30,7 +32,7 @@ class HelpDialog(QDialog):
 class CssDialog(QDialog):
     def __init__(self, browser, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Добавить CSS")
+        self.setWindowTitle("Изменить CSS")
         self.resize(400, 300)
         self.browser = browser
 

@@ -15,7 +15,6 @@ class AutoScrollApp(QMainWindow):
         self.scroll_timer = None
         self.toggle_frame_action = None
         self.toggle_ui_action = None
-        self.help_button = None
         self.status_label = None
         self.control_panel = None
         self.context_menu = None
@@ -89,11 +88,6 @@ class AutoScrollApp(QMainWindow):
         self.control_panel = QHBoxLayout(self.control_panel_widget)
         self.control_panel.setContentsMargins(5, 0, 5, 5)
 
-        self.help_button = QPushButton("Помощь", self)
-        self.help_button.setFixedSize(70, 25)
-        self.help_button.clicked.connect(self.show_help)
-        self.control_panel.addWidget(self.help_button)
-
         self.status_label = QPushButton("Scroll: Off", self)
         self.status_label.setFixedSize(70, 25)
         self.status_label.clicked.connect(self.toggle_scroll)
@@ -104,12 +98,23 @@ class AutoScrollApp(QMainWindow):
         self.control_panel_widget.adjustSize()
 
     def setup_context_menu(self):
+        self.context_menu.addAction("О программе", self.show_help)
+        self.context_menu.addAction("Авто прокрутка (Ctrl+Shift+L)", self.toggle_scroll)
+        self.context_menu.addSeparator()
         self.context_menu.addAction("Перезагрузить (F5)", self.do_reload_page)
         self.context_menu.addAction("Открыть DevTools (Ctrl+Shift+I)", self.open_dev_tools)
         self.context_menu.addAction("Изменить CSS (Ctrl+Shift+C)", self.show_css_dialog)
-
+        self.context_menu.addSeparator()
         self.toggle_ui_action = self.context_menu.addAction("Скрыть UI (Ctrl+Shift+K)", self.toggle_ui)
         self.toggle_frame_action = self.context_menu.addAction("Скрыть окно (Ctrl+Shift+J)", self.toggle_frame)
+
+        self.context_menu.setStyleSheet("""
+            QMenu::separator {
+                background: #ffffff;
+                height: 1px;
+                margin-bottom: 5px;
+            }
+        """)
 
     def init_shortcuts(self):
         QShortcut(QKeySequence("Ctrl+Shift+L"), self).activated.connect(self.toggle_scroll)
